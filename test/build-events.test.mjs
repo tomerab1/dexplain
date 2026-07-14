@@ -55,6 +55,20 @@ test('classifies space-padded step numbers from builds with >=10 steps', () => {
   assert.equal(early.durationMs, 52_000);
 });
 
+test('classifies multi-stage step names that carry a stage prefix', () => {
+  const multi = [
+    '{"vertexes":[{"digest":"a","name":"[admin-build 4/8] RUN npm run build","started":"2026-01-01T00:00:00Z","completed":"2026-01-01T00:00:26Z"}]}',
+    '{"vertexes":[{"digest":"b","name":"[runtime 3/8] RUN apt-get update","started":"2026-01-01T00:00:26Z","completed":"2026-01-01T00:00:36Z"}]}',
+  ].join('\n');
+  const trace = parseBuildTrace(multi);
+  assert.equal(trace.buildStepCount, 2);
+  const build = trace.steps.find((step) => step.stage === 'admin-build');
+  assert.equal(build.internal, false);
+  assert.equal(build.index, 4);
+  assert.equal(build.instruction, 'RUN');
+  assert.equal(trace.steps.find((step) => step.stage === 'runtime').durationMs, 10_000);
+});
+
 test('tolerates blank and malformed lines', () => {
   const trace = parseBuildTrace(`\n{"vertexes":[{"digest":"a","name":"[1/1] RUN x","started":"2026-01-01T00:00:00Z","completed":"2026-01-01T00:00:01Z"}]}\nnot json\n`);
   assert.equal(trace.buildStepCount, 1);
