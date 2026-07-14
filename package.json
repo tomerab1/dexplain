@@ -1,0 +1,20 @@
+{
+  "name": "dexplain",
+  "version": "0.1.0",
+  "description": "EXPLAIN for Docker builds and images — collects build/image facts, runs a deterministic rule engine, emits ranked findings for Claude to reason over.",
+  "type": "module",
+  "bin": {
+    "dexplain": "./dexplain.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomerab1/dexplain.git"
+  },
+  "license": "MIT"
+}
