@@ -22,7 +22,7 @@ dexplain dockerfile [path]              # static-only analysis of a Dockerfile
 ```
 
 Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (analyze),
-`--top <n>`, `--no-color`.
+`--top <n>`, `--fail-on <sev>` (CI gate), `--no-color`.
 
 ## How to use it with Claude
 
@@ -35,12 +35,19 @@ Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (a
 Capture a build log for later analysis with:
 `DOCKER_BUILDKIT=1 docker build --progress=rawjson -t app . 2> build.ndjson`
 
-## What it checks (v1)
+## What it checks (18 rules)
 
-Build/cache: cache-invalidation (`COPY . .` before install), missing cache mount,
-slow steps, uncached expensive steps. Image: fat layers, dev/build artifacts in the
-final image, single-stage builds that ship the toolchain. Dockerfile: apt antipatterns.
+Build/cache: cache-invalidation (`COPY . .` before install), missing cache mount
+(npm/yarn/pnpm/pip/apt/apk/go), slow steps, uncached expensive steps, slow image export
+(fat-image tell). Image: fat layers, dev/build artifacts in the final image, single-stage
+builds that ship the toolchain, apt/yum/dnf hygiene. Security: root user in the final
+stage, secrets in ENV/ARG. Dockerfile: unpinned base images, ADD-vs-COPY, shadowed
+CMD/ENTRYPOINT/HEALTHCHECK, cd-in-RUN / relative WORKDIR, deprecated MAINTAINER.
 Context: oversized build context / missing `.dockerignore`.
+
+Every finding carries `fixRisk` (low/medium/high) — how likely applying the suggested fix
+is to change behavior. dexplain never edits the Dockerfile; treat high-risk fixes as
+"apply, rebuild, run smoke tests".
 
 ## Design
 

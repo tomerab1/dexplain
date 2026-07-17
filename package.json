@@ -6,15 +6,38 @@
   "bin": {
     "dexplain": "./dexplain.mjs"
   },
+  "files": [
+    "dexplain.mjs",
+    "lib/",
+    "SKILL.md",
+    "docs/DESIGN.md"
+  ],
   "scripts": {
     "test": "node --test"
   },
+  "keywords": [
+    "docker",
+    "buildkit",
+    "dockerfile",
+    "docker-build",
+    "build",
+    "cache",
+    "layers",
+    "explain",
+    "cli",
+    "devtools"
+  ],
   "engines": {
     "node": ">=20.11.0"
   },
+  "author": "tomerab1",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tomerab1/dexplain.git"
   },
-  "license": "MIT"
+  "homepage": "https://github.com/tomerab1/dexplain#readme",
+  "bugs": {
+    "url": "https://github.com/tomerab1/dexplain/issues"
+  }
 }

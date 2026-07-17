@@ -1,5 +1,7 @@
 # dexplain
 
+[![test](https://github.com/tomerab1/dexplain/actions/workflows/test.yml/badge.svg)](https://github.com/tomerab1/dexplain/actions/workflows/test.yml)
+
 **`EXPLAIN` for Docker builds and images.**
 
 `dexplain` is to a slow `docker build` what `EXPLAIN` is to a slow SQL query: it turns the
@@ -43,7 +45,7 @@ dexplain dockerfile [path]              # static-only analysis of a Dockerfile
 ```
 
 Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (with
-`analyze`), `--top <n>`, `--no-color`.
+`analyze`), `--top <n>`, `--fail-on <sev>` (CI gate), `--no-color`.
 
 ### Example
 
@@ -87,14 +89,38 @@ query plan and choosing an index.
 | Rule | Category | Flags |
 |------|----------|-------|
 | `cache-invalidation` | cache | `COPY . .` before a dependency install, busting the install cache |
-| `missing-cache-mount` | cache | a package-manager `RUN` without `--mount=type=cache` |
+| `missing-cache-mount` | cache | a package-manager `RUN` without `--mount=type=cache` (npm/yarn/pnpm/pip/apt/apk/go) |
 | `slow-step` | build-time | a step that dominates build wall-time |
 | `uncached-expensive-step` | cache | an expensive `RUN` that missed cache this build |
+| `slow-export` | build-time | the image-export phase dominating the build — the tell of a fat final image |
 | `no-multistage` | image-size | a single stage that both builds and ships |
 | `fat-layer` | image-size | a layer over a size threshold |
 | `dev-deps-in-final` | image-size | build/dev artifacts shipped in the final image |
-| `apt-antipattern` | image-size | split `apt-get update`/`install`, or lists not cleaned |
+| `apt-antipattern` | image-size | split `apt-get update`/`install`, lists not cleaned, or recommends pulled in |
+| `yum-dnf-antipattern` | image-size | yum/dnf/microdnf installs leaving package cache in the layer |
 | `context-bloat` | context | oversized build context / missing `.dockerignore` |
+| `unpinned-base-image` | dockerfile | `FROM` without a tag, or `:latest` |
+| `root-user` | security | final stage runs as root (no `USER`, or explicit `USER root`) |
+| `secret-in-env-arg` | security | secret-looking `ENV`/`ARG` names or hardcoded AWS keys baked into the image |
+| `add-instead-of-copy` | dockerfile | `ADD` used for plain local files where `COPY` suffices |
+| `duplicate-lifecycle-instruction` | dockerfile | shadowed `CMD`/`ENTRYPOINT`/`HEALTHCHECK` (only the last one wins) |
+| `workdir-hygiene` | dockerfile | `RUN cd …` instead of `WORKDIR`, or a relative `WORKDIR` |
+| `maintainer-deprecated` | dockerfile | the deprecated `MAINTAINER` instruction |
+
+## Correctness of suggested fixes
+
+`dexplain` **never edits your Dockerfile** — it reports findings; you (or your assistant)
+apply them. Because some fixes can change behavior, every finding carries a `fixRisk`
+grade, shown as a ⚠ caution in the summary and as a field in the JSON:
+
+- **low** — cache/metadata only (cache mounts, `.dockerignore`, cleaning package lists,
+  deleting a shadowed `CMD`): safe to apply mechanically.
+- **medium** — changes layer contents in bounded ways (pinning a base tag, merging
+  `update`/`install`): rebuild and confirm the build still passes.
+- **high** — can change what the image does at runtime (reordering `COPY` before an
+  install changes which files postinstall scripts see; `--no-install-recommends` can drop
+  packages you implicitly relied on; switching off root changes file permissions): apply,
+  rebuild, and run your smoke tests before trusting it.
 
 ## How it works
 
