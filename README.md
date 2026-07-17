@@ -28,6 +28,13 @@ layers, oversized build context).
 Requires **Node ≥ 20.11** and **Docker** (with BuildKit, the default on modern Docker).
 
 ```bash
+npm install -g @tomerab1/dexplain
+dexplain --help
+```
+
+Or straight from source (zero dependencies):
+
+```bash
 git clone https://github.com/tomerab1/dexplain.git
 cd dexplain
 node dexplain.mjs --help

@@ -1,8 +1,11 @@
 {
-  "name": "dexplain",
+  "name": "@tomerab1/dexplain",
   "version": "0.1.0",
   "description": "EXPLAIN for Docker builds and images — collects build/image facts, runs a deterministic rule engine, emits ranked findings for Claude to reason over.",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "dexplain": "./dexplain.mjs"
   },
