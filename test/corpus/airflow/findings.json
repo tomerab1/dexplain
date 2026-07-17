@@ -1,0 +1,37 @@
+[
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 1168,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM __future__ has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 1173,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM email.parser has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 1174,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM pathlib has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 1176,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM packaging.specifiers has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 1177,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM packaging.utils has no tag (implies :latest)"
+  }
+]

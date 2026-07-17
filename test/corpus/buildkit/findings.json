@@ -1,0 +1,156 @@
+[
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 37,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 40,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 55,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 59,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apk install has no build cache mount"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 156,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 158,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "go install has no build cache mount"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 162,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 183,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 207,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM binaries-$TARGETOS has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 211,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 230,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 244,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM buildkit-export-${EXPORT_BASE} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 252,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apk install has no build cache mount"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 278,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 285,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 292,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 298,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 314,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 316,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "go install has no build cache mount"
+  },
+  {
+    "ruleId": "add-instead-of-copy",
+    "line": 323,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "ADD used where COPY suffices"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 447,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "npm install has no build cache mount"
+  },
+  {
+    "ruleId": "root-user",
+    "line": 511,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  }
+]

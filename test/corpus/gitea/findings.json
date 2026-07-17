@@ -1,0 +1,23 @@
+[
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 3,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 26,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "go install has no build cache mount"
+  },
+  {
+    "ruleId": "root-user",
+    "line": 47,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 18,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 19,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 122,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM binaries-$TARGETOS has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 160,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "root-user",
+    "line": 187,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  }
+]

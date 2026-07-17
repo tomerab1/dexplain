@@ -1,0 +1,135 @@
+[
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 35,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 37,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 48,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM --platform=$BUILDPLATFORM has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "apt-antipattern",
+    "line": 51,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "apt package lists are left in the image"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 51,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "apt-antipattern",
+    "line": 56,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "apt package lists are left in the image"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 56,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 58,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-base-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 64,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-base-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 71,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 94,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 105,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "apt-antipattern",
+    "line": 119,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "apt package lists are left in the image"
+  },
+  {
+    "ruleId": "apt-antipattern",
+    "line": 119,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "apt-get install pulls in recommended packages"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 119,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 124,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM e2e-base-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 135,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM build-base-${BASE_VARIANT} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "unpinned-base-image",
+    "line": 148,
+    "severity": "medium",
+    "fixRisk": "medium",
+    "title": "FROM bin-image-${TARGETOS} has no tag (implies :latest)"
+  },
+  {
+    "ruleId": "root-user",
+    "line": 150,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  }
+]

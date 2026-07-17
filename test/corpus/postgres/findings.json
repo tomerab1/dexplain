@@ -1,0 +1,44 @@
+[
+  {
+    "ruleId": "no-multistage",
+    "line": 7,
+    "severity": "medium",
+    "fixRisk": "high",
+    "title": "Single-stage build ships the build toolchain"
+  },
+  {
+    "ruleId": "root-user",
+    "line": 7,
+    "severity": "low",
+    "fixRisk": "high",
+    "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  },
+  {
+    "ruleId": "apt-antipattern",
+    "line": 18,
+    "severity": "low",
+    "fixRisk": "low",
+    "title": "apt package lists are left in the image"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 18,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 32,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 66,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
+  }
+]
