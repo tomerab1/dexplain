@@ -27,3 +27,47 @@ test('detects an explicit --progress and defaults context to .', () => {
   assert.equal(meta.progressPresent, true);
   assert.equal(meta.contextDir, '.');
 });
+
+test('handles --memory flag before context', () => {
+  const meta = parseBuildArgs(['--memory', '2g', '.']);
+  assert.equal(meta.contextDir, '.');
+});
+
+test('handles --memory flag after context', () => {
+  const meta = parseBuildArgs(['.', '--memory', '2g']);
+  assert.equal(meta.contextDir, '.');
+});
+
+test('handles --ulimit flag with tag and context', () => {
+  const meta = parseBuildArgs(['--ulimit', 'nofile=1024', '-t', 'x', '.']);
+  assert.equal(meta.tag, 'x');
+  assert.equal(meta.contextDir, '.');
+});
+
+test('accepts a git HTTPS URL as context', () => {
+  const meta = parseBuildArgs(['https://github.com/x/y.git']);
+  assert.equal(meta.contextDir, 'https://github.com/x/y.git');
+});
+
+test('accepts a git SSH URL as context', () => {
+  const meta = parseBuildArgs(['git@github.com:x/y.git']);
+  assert.equal(meta.contextDir, 'git@github.com:x/y.git');
+});
+
+test('prefers an existing directory over junk trailing positional with injected isDir', () => {
+  const mockIsDir = (path) => path === '/real/dir';
+  const meta = parseBuildArgs(['/real/dir', 'junk'], { isDir: mockIsDir });
+  assert.equal(meta.contextDir, '/real/dir');
+});
+
+test('falls back to last positional when none are plausible directories', () => {
+  const mockIsDir = () => false;
+  const meta = parseBuildArgs(['junk1', 'junk2'], { isDir: mockIsDir });
+  assert.equal(meta.contextDir, 'junk2');
+});
+
+test('accepts stdin (-) as a context', () => {
+  const mockIsDir = () => false;
+  const meta = parseBuildArgs(['-', 'junk'], { isDir: mockIsDir });
+  assert.equal(meta.contextDir, '-');
+});
