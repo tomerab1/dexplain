@@ -96,7 +96,7 @@ query plan and choosing an index.
 | Rule | Category | Flags |
 |------|----------|-------|
 | `cache-invalidation` | cache | `COPY . .` before a dependency install, busting the install cache |
-| `missing-cache-mount` | cache | a package-manager `RUN` without `--mount=type=cache` (npm/yarn/pnpm/pip/apt/apk/go) |
+| `missing-cache-mount` | cache | a package-manager `RUN` without a cache mount (npm/yarn/pnpm/pip/uv/poetry/apt/apk/go/cargo/composer/bundler/gradle/maven) |
 | `slow-step` | build-time | a step that dominates build wall-time |
 | `uncached-expensive-step` | cache | an expensive `RUN` that missed cache this build |
 | `slow-export` | build-time | the image-export phase dominating the build — the tell of a fat final image |

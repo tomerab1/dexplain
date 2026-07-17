@@ -39,8 +39,9 @@ Capture a build log for later analysis with:
 ## What it checks (18 rules)
 
 Build/cache: cache-invalidation (`COPY . .` before install), missing cache mount
-(npm/yarn/pnpm/pip/apt/apk/go), slow steps, uncached expensive steps, slow image export
-(fat-image tell). Image: fat layers, dev/build artifacts in the final image, single-stage
+(npm/yarn/pnpm/pip/uv/poetry/apt/apk/go/cargo/composer/bundler/gradle/maven), slow
+steps, uncached expensive steps, slow image export (fat-image tell). Heredoc bodies
+and exec-form (`RUN ["npm","ci"]`) commands are matched like shell form. Image: fat layers, dev/build artifacts in the final image, single-stage
 builds that ship the toolchain, apt/yum/dnf hygiene. Security: root user in the final
 stage, secrets in ENV/ARG. Dockerfile: unpinned base images, ADD-vs-COPY, shadowed
 CMD/ENTRYPOINT/HEALTHCHECK, cd-in-RUN / relative WORKDIR, deprecated MAINTAINER.

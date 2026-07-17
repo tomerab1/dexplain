@@ -1,6 +1,6 @@
 {
   "name": "@tomerab1/dexplain",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "EXPLAIN for Docker builds and images — collects build/image facts, runs a deterministic rule engine, emits ranked findings for Claude to reason over.",
   "type": "module",
   "publishConfig": {
