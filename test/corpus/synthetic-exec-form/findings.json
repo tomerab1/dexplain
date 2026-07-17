@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "ruleId": "no-multistage",
+    "line": 1,
+    "severity": "medium",
+    "fixRisk": "high",
+    "title": "Single-stage build ships the build toolchain"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 4,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "npm install has no build cache mount"
+  }
+]

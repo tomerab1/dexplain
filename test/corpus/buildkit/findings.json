@@ -35,13 +35,6 @@
     "title": "ADD used where COPY suffices"
   },
   {
-    "ruleId": "missing-cache-mount",
-    "line": 158,
-    "severity": "medium",
-    "fixRisk": "low",
-    "title": "go install has no build cache mount"
-  },
-  {
     "ruleId": "unpinned-base-image",
     "line": 162,
     "severity": "medium",
@@ -124,13 +117,6 @@
     "severity": "low",
     "fixRisk": "low",
     "title": "ADD used where COPY suffices"
-  },
-  {
-    "ruleId": "missing-cache-mount",
-    "line": 316,
-    "severity": "medium",
-    "fixRisk": "low",
-    "title": "go install has no build cache mount"
   },
   {
     "ruleId": "add-instead-of-copy",

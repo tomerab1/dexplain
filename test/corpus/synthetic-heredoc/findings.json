@@ -1,9 +1,23 @@
 [
   {
+    "ruleId": "no-multistage",
+    "line": 1,
+    "severity": "medium",
+    "fixRisk": "high",
+    "title": "Single-stage build ships the build toolchain"
+  },
+  {
     "ruleId": "root-user",
     "line": 1,
     "severity": "low",
     "fixRisk": "high",
     "title": "Final stage sets no USER (container runs as the base image's default, usually root)"
+  },
+  {
+    "ruleId": "missing-cache-mount",
+    "line": 2,
+    "severity": "medium",
+    "fixRisk": "low",
+    "title": "apt install has no build cache mount"
   }
 ]

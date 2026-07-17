@@ -6,6 +6,7 @@ import cacheInvalidation from '../lib/rules/cache-invalidation.mjs';
 import missingCacheMount from '../lib/rules/missing-cache-mount.mjs';
 import noMultistage from '../lib/rules/no-multistage.mjs';
 import aptAntipattern from '../lib/rules/apt-antipattern.mjs';
+import workdirHygiene from '../lib/rules/workdir-hygiene.mjs';
 import slowStep from '../lib/rules/slow-step.mjs';
 import uncachedExpensiveStep from '../lib/rules/uncached-expensive-step.mjs';
 import fatLayer from '../lib/rules/fat-layer.mjs';
@@ -44,6 +45,18 @@ test('apt-antipattern flags split update/install and missing cleanup', () => {
   assert.ok(split.some((f) => /package lists/.test(f.title)));
   const clean = 'FROM debian\nRUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*\n';
   assert.equal(aptAntipattern.evaluate(df(clean)).length, 0);
+});
+
+test('cache mounts on the heredoc opener line suppress missing-cache-mount', () => {
+  const heredocWithMount = 'FROM golang:1.22\nRUN --mount=target=/root/.cache,type=cache <<EOT\ngo install ./cmd\nEOT\n';
+  assert.equal(missingCacheMount.evaluate(df(heredocWithMount)).length, 0);
+  const heredocWithoutMount = 'FROM golang:1.22\nRUN <<EOT\ngo install ./cmd\nEOT\n';
+  assert.equal(missingCacheMount.evaluate(df(heredocWithoutMount)).length, 1);
+});
+
+test('cache-mount detection tolerates option order before type=cache', () => {
+  const reordered = 'FROM node:20\nRUN --mount=target=/root/.npm,type=cache npm ci\n';
+  assert.equal(missingCacheMount.evaluate(df(reordered)).length, 0);
 });
 
 test('apt-antipattern matches flags between command and subcommand', () => {
@@ -194,4 +207,28 @@ test('every registered rule declares the required contract fields', () => {
     assert.ok(Array.isArray(rule.requires));
     assert.equal(typeof rule.evaluate, 'function');
   }
+});
+
+test('missing-cache-mount flags exec-form npm ci (shellText switches matcher breadth)', () => {
+  const execForm = missingCacheMount.evaluate(df('FROM node:22\nCOPY package.json .\nRUN ["npm","ci"]\n'));
+  assert.equal(execForm.length, 1, 'exec-form npm ci should fire missing-cache-mount');
+  assert.equal(execForm[0].evidence.packageManager, 'npm', 'should identify npm');
+});
+
+test('apt-antipattern fires on heredoc with apt commands (shellText for heredoc body)', () => {
+  const heredoc = aptAntipattern.evaluate(df('FROM debian\nRUN <<EOF\napt-get update\napt-get install -y curl\nEOF\n'));
+  assert.ok(heredoc.some((f) => /package lists/.test(f.title)), 'should flag missing package list cleanup');
+  assert.ok(heredoc.some((f) => /recommended packages/.test(f.title)), 'should flag missing --no-install-recommends');
+});
+
+test('missing-cache-mount fires on heredoc with apt (shellText for heredoc body)', () => {
+  const heredoc = missingCacheMount.evaluate(df('FROM debian\nRUN <<EOF\napt-get update\napt-get install -y curl\nEOF\n'));
+  assert.equal(heredoc.length, 1, 'should fire for apt-get in heredoc');
+  assert.equal(heredoc[0].evidence.packageManager, 'apt', 'should identify apt');
+});
+
+test('workdir-hygiene exec-form: RUN ["sh","-c","cd /app && make"] should NOT fire (shell prefix blocks cd check)', () => {
+  const execFormCd = workdirHygiene.evaluate(df('FROM node:20\nRUN ["sh","-c","cd /app && make"]\n'));
+  // shellText for exec-form is 'sh -c cd /app && make', starts with 'sh', not 'cd'
+  assert.equal(execFormCd.length, 0, 'exec-form cd via sh -c should not fire (shell prefix)');
 });
