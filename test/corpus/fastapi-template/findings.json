@@ -1,5 +1,12 @@
 [
   {
+    "ruleId": "no-multistage",
+    "line": 1,
+    "severity": "medium",
+    "fixRisk": "high",
+    "title": "Single-stage build ships the build toolchain"
+  },
+  {
     "ruleId": "root-user",
     "line": 1,
     "severity": "low",

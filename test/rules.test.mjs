@@ -232,3 +232,77 @@ test('workdir-hygiene exec-form: RUN ["sh","-c","cd /app && make"] should NOT fi
   // shellText for exec-form is 'sh -c cd /app && make', starts with 'sh', not 'cd'
   assert.equal(execFormCd.length, 0, 'exec-form cd via sh -c should not fire (shell prefix)');
 });
+
+test('missing-cache-mount cargo: matches build/install/fetch, not test', () => {
+  const cargoBuild = missingCacheMount.evaluate(df('FROM rust:latest\nRUN cargo build --release\n'));
+  assert.equal(cargoBuild.length, 1, 'cargo build should fire');
+  assert.equal(cargoBuild[0].evidence.packageManager, 'cargo');
+  assert.ok(/cargo\/registry/.test(cargoBuild[0].suggestedFix), 'should suggest cargo cache mount');
+
+  const cargoTest = missingCacheMount.evaluate(df('FROM rust:latest\nRUN cargo test\n'));
+  assert.equal(cargoTest.length, 0, 'cargo test should not fire');
+});
+
+test('missing-cache-mount composer: matches install/require/update, not dump-autoload', () => {
+  const composerInstall = missingCacheMount.evaluate(df('FROM php:8.2\nRUN composer install --no-dev\n'));
+  assert.equal(composerInstall.length, 1, 'composer install should fire');
+  assert.equal(composerInstall[0].evidence.packageManager, 'composer');
+
+  const composerDump = missingCacheMount.evaluate(df('FROM php:8.2\nRUN composer dump-autoload\n'));
+  assert.equal(composerDump.length, 0, 'composer dump-autoload should not fire');
+});
+
+test('missing-cache-mount bundler: matches bundle install only', () => {
+  const bundleInstall = missingCacheMount.evaluate(df('FROM ruby:3.2\nRUN bundle install\n'));
+  assert.equal(bundleInstall.length, 1, 'bundle install should fire');
+  assert.equal(bundleInstall[0].evidence.packageManager, 'bundler');
+
+  const bundleExec = missingCacheMount.evaluate(df('FROM ruby:3.2\nRUN bundle exec rake\n'));
+  assert.equal(bundleExec.length, 0, 'bundle exec should not fire');
+});
+
+test('missing-cache-mount gradle: matches gradle/./gradlew build/assemble/test, not --version', () => {
+  const gradlewBuild = missingCacheMount.evaluate(df('FROM openjdk:17\nRUN ./gradlew build\n'));
+  assert.equal(gradlewBuild.length, 1, './gradlew build should fire');
+  assert.equal(gradlewBuild[0].evidence.packageManager, 'gradle');
+
+  const gradleVersion = missingCacheMount.evaluate(df('FROM openjdk:17\nRUN gradle --version\n'));
+  assert.equal(gradleVersion.length, 0, 'gradle --version should not fire');
+});
+
+test('missing-cache-mount maven: matches mvn package/install/verify/deploy/compile/test, flags between command and subcommand', () => {
+  const mvnPackage = missingCacheMount.evaluate(df('FROM openjdk:17\nRUN mvn -B package\n'));
+  assert.equal(mvnPackage.length, 1, 'mvn -B package should fire');
+  assert.equal(mvnPackage[0].evidence.packageManager, 'maven');
+
+  const mvnDeps = missingCacheMount.evaluate(df('FROM openjdk:17\nRUN mvn dependency:tree\n'));
+  assert.equal(mvnDeps.length, 0, 'mvn dependency:tree should not fire');
+});
+
+test('missing-cache-mount poetry: matches poetry install, not poetry run', () => {
+  const poetryInstall = missingCacheMount.evaluate(df('FROM python:3.11\nRUN poetry install --no-root\n'));
+  assert.equal(poetryInstall.length, 1, 'poetry install should fire');
+  assert.equal(poetryInstall[0].evidence.packageManager, 'poetry');
+
+  const poetryRun = missingCacheMount.evaluate(df('FROM python:3.11\nRUN poetry run app\n'));
+  assert.equal(poetryRun.length, 0, 'poetry run should not fire');
+});
+
+test('missing-cache-mount uv: matches uv pip install and uv sync, not uv venv', () => {
+  const uvPipInstall = missingCacheMount.evaluate(df('FROM python:3.12\nRUN uv pip install -r requirements.txt\n'));
+  assert.equal(uvPipInstall.length, 1, 'uv pip install should fire');
+  assert.equal(uvPipInstall[0].evidence.packageManager, 'uv');
+
+  const uvSync = missingCacheMount.evaluate(df('FROM python:3.12\nRUN uv sync\n'));
+  assert.equal(uvSync.length, 1, 'uv sync should fire');
+  assert.equal(uvSync[0].evidence.packageManager, 'uv');
+
+  const uvVenv = missingCacheMount.evaluate(df('FROM python:3.12\nRUN uv venv\n'));
+  assert.equal(uvVenv.length, 0, 'uv venv should not fire');
+});
+
+test('missing-cache-mount cargo exec-form: RUN ["cargo","build"] fires (shellText path)', () => {
+  const cargoExec = missingCacheMount.evaluate(df('FROM rust:latest\nRUN ["cargo","build"]\n'));
+  assert.equal(cargoExec.length, 1, 'exec-form cargo build should fire');
+  assert.equal(cargoExec[0].evidence.packageManager, 'cargo');
+});
