@@ -49,3 +49,41 @@ test('json output is valid and findings are ranked most-severe first', () => {
   assert.equal(parsed.findings.at(-1).severity, SEVERITY.LOW);
   assert.equal(parsed.summary.bySeverity.high, 1);
 });
+
+test('human summary displays failure block when buildTrace has a failedStep', () => {
+  const reportWithFailure = buildReport({
+    command: 'build',
+    buildTrace: {
+      totalDurationMs: 5000,
+      cachedCount: 0,
+      buildStepCount: 3,
+      steps: [
+        {
+          internal: false,
+          name: '[3/3] RUN failing-cmd',
+          digest: 'sha256:abc123',
+          error: 'process "/bin/sh -c failing-cmd" did not complete successfully: exit code: 1',
+          logTail: ['error line 1', 'error line 2'],
+        },
+      ],
+      failedStep: {
+        internal: false,
+        name: '[3/3] RUN failing-cmd',
+        digest: 'sha256:abc123',
+        error: 'process "/bin/sh -c failing-cmd" did not complete successfully: exit code: 1',
+        logTail: ['error line 1', 'error line 2'],
+      },
+    },
+  });
+  const out = renderHuman(reportWithFailure, { color: false });
+  assert.match(out, /BUILD FAILED at/);
+  assert.match(out, /\[3\/3\] RUN failing-cmd/);
+  assert.match(out, /exit code: 1/);
+  assert.match(out, /error line 1/);
+  assert.match(out, /error line 2/);
+});
+
+test('human summary omits failure block when no failedStep', () => {
+  const out = renderHuman(sampleReport(), { color: false });
+  assert.ok(!out.includes('BUILD FAILED'));
+});

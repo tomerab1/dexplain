@@ -6,6 +6,7 @@ import { parseBuildTrace } from '../lib/collect/build-events.mjs';
 const dir = import.meta.dirname;
 const uncached = readFileSync(`${dir}/fixtures/build-rawjson-uncached.ndjson`, 'utf8');
 const cached = readFileSync(`${dir}/fixtures/build-rawjson-cached.ndjson`, 'utf8');
+const failed = readFileSync(`${dir}/fixtures/build-rawjson-failed.ndjson`, 'utf8');
 
 test('parses the five build steps from a real uncached rawjson stream', () => {
   const trace = parseBuildTrace(uncached);
@@ -73,4 +74,23 @@ test('tolerates blank and malformed lines', () => {
   const trace = parseBuildTrace(`\n{"vertexes":[{"digest":"a","name":"[1/1] RUN x","started":"2026-01-01T00:00:00Z","completed":"2026-01-01T00:00:01Z"}]}\nnot json\n`);
   assert.equal(trace.buildStepCount, 1);
   assert.equal(trace.steps[0].durationMs, 1000);
+});
+
+test('parses a failed build and extracts the failing step with error and logTail', () => {
+  const trace = parseBuildTrace(failed);
+  assert.ok(trace.failedStep, 'expected a failedStep');
+  assert.ok(trace.failedStep.error.includes('exit code: 127'), `expected exit code in error: ${trace.failedStep.error}`);
+  assert.ok(trace.failedStep.error.includes('this-command-does-not-exist'), 'expected command in error');
+  assert.ok(trace.failedStep.logTail, 'expected logTail on failed step');
+  assert.ok(Array.isArray(trace.failedStep.logTail), 'logTail should be an array');
+  assert.ok(trace.failedStep.logTail.some((line) => line.includes('not found')), 'expected "not found" in logTail');
+});
+
+test('non-failed steps have logTail null', () => {
+  const trace = parseBuildTrace(failed);
+  const successfulSteps = trace.steps.filter((step) => !step.error && !step.internal);
+  assert.ok(successfulSteps.length > 0, 'expected some non-failed steps');
+  for (const step of successfulSteps) {
+    assert.equal(step.logTail, null, `expected logTail to be null for successful step ${step.name}`);
+  }
 });
