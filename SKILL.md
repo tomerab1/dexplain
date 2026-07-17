@@ -1,6 +1,6 @@
 ---
 name: dexplain
-description: EXPLAIN for Docker builds and images. Wraps `docker build` (or ingests a rawjson log / existing image / Dockerfile), collects per-step timing, cache hit/miss, and layer sizes, runs a deterministic rule engine, and emits ranked findings plus a machine-readable JSON report for Claude to reason over. Use to answer "why is this Docker build slow / this image fat / this layer huge", find cache-busting Dockerfile antipatterns, or triage a build before optimizing. Pure-Node, read-only, no external tools required.
+description: EXPLAIN for Docker builds and images. Wraps `docker build` (or ingests a rawjson log / existing image / Dockerfile), collects per-step timing, cache hit/miss, and layer sizes, runs an 18-rule deterministic engine (cache, build-time, image-size, security — root user, secrets in ENV/ARG — and Dockerfile hygiene), and emits ranked findings with fixRisk grades plus a machine-readable JSON report for Claude to reason over. Use to answer "why is this Docker build slow / this image fat / this layer huge", "is this Dockerfile safe/well-written", find cache-busting antipatterns, or gate CI with --fail-on. Pure-Node, read-only, no external tools required.
 ---
 
 # dexplain
@@ -28,9 +28,10 @@ Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (a
 
 1. Run the relevant command with `--json` (or `--json-out report.json`).
 2. Hand the JSON to Claude. Each finding carries `ruleId`, `severity`, `location`,
-   `evidence`, `suggestedFix`, and a best-effort `estimatedImpact`.
-3. Claude weighs which fixes are worth it given intent, and can propose the concrete
-   Dockerfile edits.
+   `evidence`, `suggestedFix`, a best-effort `estimatedImpact`, and `fixRisk`
+   (low/medium/high — how likely the fix is to change build/runtime behavior).
+3. Claude weighs which fixes are worth it given intent and risk, proposes the concrete
+   Dockerfile edits, and for high-risk fixes should rebuild and verify behavior.
 
 Capture a build log for later analysis with:
 `DOCKER_BUILDKIT=1 docker build --progress=rawjson -t app . 2> build.ndjson`
