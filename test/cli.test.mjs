@@ -16,7 +16,7 @@ test('parseCliArgs splits command, passthrough args, and own flags anywhere', ()
   assert.deepEqual(parseCliArgs(['build', '-t', 'x', '.']), {
     command: 'build',
     rest: ['-t', 'x', '.'],
-    options: { json: false, noColor: false, jsonOut: null, image: null, top: null, failOn: null, timeline: null },
+    options: { json: false, noColor: false, jsonOut: null, image: null, traceA: null, traceB: null, top: null, failOn: null, timeline: null },
   });
   const withFlags = parseCliArgs(['--json', 'analyze', 'log.ndjson', '--image', 'ref', '--top=5']);
   assert.equal(withFlags.command, 'analyze');
@@ -117,4 +117,44 @@ test('dockerfile command without --fail-on exits 0 even with findings', async ()
   } finally {
     rmSync(path, { force: true });
   }
+});
+
+test('diff command with two trace files exits 0 and outputs timing section', async () => {
+  const fixtureA = join(import.meta.dirname, 'fixtures', 'build-rawjson-uncached.ndjson');
+  const fixtureB = join(import.meta.dirname, 'fixtures', 'build-rawjson-cached.ndjson');
+  const io = fakeIo();
+  const code = await main(['diff', fixtureA, fixtureB], io);
+  assert.equal(code, EXIT.OK);
+  assert.match(io.text(), /dexplain diff/);
+  assert.match(io.text(), /TIMING/);
+});
+
+test('diff command with missing file argument exits with usage error', async () => {
+  const fixtureA = join(import.meta.dirname, 'fixtures', 'build-rawjson-uncached.ndjson');
+  const io = fakeIo();
+  const code = await main(['diff', fixtureA], io);
+  assert.equal(code, EXIT.USAGE);
+  assert.match(io.errors(), /usage: dexplain diff/);
+});
+
+test('diff with --fail-on high exits 0 when no high findings introduced', async () => {
+  const fixtureA = join(import.meta.dirname, 'fixtures', 'build-rawjson-uncached.ndjson');
+  const fixtureB = join(import.meta.dirname, 'fixtures', 'build-rawjson-cached.ndjson');
+  const io = fakeIo();
+  const code = await main(['diff', fixtureA, fixtureB, '--fail-on', 'high'], io);
+  assert.equal(code, EXIT.OK);
+});
+
+test('diff with --json outputs parseable JSON with deltas', async () => {
+  const fixtureA = join(import.meta.dirname, 'fixtures', 'build-rawjson-uncached.ndjson');
+  const fixtureB = join(import.meta.dirname, 'fixtures', 'build-rawjson-cached.ndjson');
+  const io = fakeIo();
+  const code = await main(['diff', fixtureA, fixtureB, '--json'], io);
+  assert.equal(code, EXIT.OK);
+  const json = JSON.parse(io.text());
+  assert.ok(json.a);
+  assert.ok(json.b);
+  assert.ok(json.deltas);
+  assert.ok(json.deltas.findings);
+  assert.ok(json.deltas.timing);
 });
