@@ -1,6 +1,6 @@
 ---
 name: dexplain
-description: EXPLAIN for Docker builds and images. Wraps `docker build` (or ingests a rawjson log / existing image / Dockerfile), collects per-step timing, cache hit/miss, and layer sizes, runs an 18-rule deterministic engine (cache, build-time, image-size, security — root user, secrets in ENV/ARG — and Dockerfile hygiene), and emits ranked findings with fixRisk grades plus a machine-readable JSON report for Claude to reason over. Use to answer "why is this Docker build slow / this image fat / this layer huge", "is this Dockerfile safe/well-written", find cache-busting antipatterns, or gate CI with --fail-on. Pure-Node, read-only, no external tools required.
+description: EXPLAIN for Docker builds and images. Wraps `docker build` (or ingests a rawjson log / existing image / Dockerfile), collects per-step timing, cache hit/miss, and layer sizes, runs a 19-rule deterministic engine (cache — incl. which step broke the cache and what it cost — build-time, image-size, security, Dockerfile hygiene), renders a build timeline Gantt, and emits ranked findings with fixRisk grades plus a machine-readable JSON report for Claude to reason over. `dexplain diff` compares two images/builds (size, layers, findings resolved vs introduced, cache transitions) to verify a fix made things better. Use to answer "why is this Docker build slow / this image fat / this layer huge", "is this Dockerfile safe/well-written", "did my fix help", find cache-busting antipatterns, or gate CI with --fail-on. Pure-Node, read-only, no external tools required.
 ---
 
 # dexplain
@@ -19,7 +19,13 @@ dexplain build [docker build args...]   # run the build (rawjson) + analyze buil
 dexplain analyze <build-log.ndjson>     # ingest a previously captured rawjson stream
 dexplain image <name:tag>               # analyze an existing image's layers/size
 dexplain dockerfile [path]              # static-only analysis of a Dockerfile
+dexplain diff <a> <b>                   # compare two images and/or rawjson traces
 ```
+
+`diff` sides auto-detect (existing `.ndjson` file = trace, else image ref);
+`--trace-a/--trace-b` attach timing to an image side; `--fail-on` on a diff fails only
+on INTRODUCED findings — use it to verify a fix made the image no worse. Builds show a
+Gantt timeline when non-trivial (`--timeline`/`--no-timeline` to force).
 
 Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (analyze),
 `--top <n>`, `--fail-on <sev>` (CI gate), `--no-color`.
@@ -36,7 +42,7 @@ Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (a
 Capture a build log for later analysis with:
 `DOCKER_BUILDKIT=1 docker build --progress=rawjson -t app . 2> build.ndjson`
 
-## What it checks (18 rules)
+## What it checks (19 rules)
 
 Build/cache: cache-invalidation (`COPY . .` before install), missing cache mount
 (npm/yarn/pnpm/pip/uv/poetry/apt/apk/go/cargo/composer/bundler/gradle/maven), slow

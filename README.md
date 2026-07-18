@@ -51,10 +51,26 @@ dexplain build [docker build args...]   # run the build (rawjson) + analyze buil
 dexplain analyze <build-log.ndjson>     # ingest a previously captured rawjson stream
 dexplain image <name:tag>               # analyze an existing image's layers/size
 dexplain dockerfile [path]              # static-only analysis of a Dockerfile
+dexplain diff <a> <b>                   # compare two images and/or build traces
 ```
 
 Flags: `--json` (full report to stdout), `--json-out <path>`, `--image <ref>` (with
-`analyze`), `--top <n>`, `--fail-on <sev>` (CI gate), `--no-color`.
+`analyze`), `--trace-a`/`--trace-b <file>` (attach timing to a `diff` side), `--top <n>`,
+`--fail-on <sev>` (CI gate; on `diff` it fails only on *introduced* findings),
+`--timeline`/`--no-timeline` (build Gantt; auto-shown for non-trivial builds), `--no-color`.
+
+### Verifying a fix with `diff`
+
+```bash
+docker build --progress=rawjson -t app:before . 2> before.ndjson
+# apply a suggested fix, then:
+docker build --progress=rawjson -t app:after .  2> after.ndjson
+dexplain diff app:before app:after --trace-a before.ndjson --trace-b after.ndjson --fail-on high
+```
+
+Size, layer, findings (resolved vs introduced), and timing deltas — cache hits gained or
+lost per step. Exit 5 only if the change *introduced* a finding at/above the severity,
+so CI can assert a change made the image no worse.
 
 ### Example
 
@@ -102,6 +118,7 @@ query plan and choosing an index.
 | `slow-step` | build-time | a step that dominates build wall-time |
 | `uncached-expensive-step` | cache | an expensive `RUN` that missed cache this build |
 | `slow-export` | build-time | the image-export phase dominating the build — the tell of a fat final image |
+| `cache-miss-cascade` | cache | the step that broke the cache, billed for every downstream rebuild it caused |
 | `no-multistage` | image-size | a single stage that both builds and ships |
 | `fat-layer` | image-size | a layer over a size threshold |
 | `dev-deps-in-final` | image-size | build/dev artifacts shipped in the final image |

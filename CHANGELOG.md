@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0 — 2026-07-18
+
+### Added
+
+- `dexplain diff <a> <b>` — compare two images and/or rawjson build traces:
+  size and layer deltas (matched by creating instruction), findings resolved
+  vs introduced, and timing deltas with cache-lost/gained transitions.
+  `--fail-on` on a diff exits 5 only for *introduced* findings, closing the
+  fixRisk verify loop in CI. `--trace-a`/`--trace-b` attach timing to image
+  sides.
+- Build timeline: a terminal Gantt after the headline for non-trivial builds
+  (`--timeline` / `--no-timeline` to force) — parallel stages, cached steps,
+  and the export tail made visible.
+- `cache-miss-cascade` rule: names the step that broke the cache and bills it
+  for every downstream rebuild it caused.
+- GitHub Action: [`tomerab1/dexplain-action`](https://github.com/tomerab1/dexplain-action)
+  — gate PRs with `--fail-on` and render findings into the job summary.
+
 ## 0.2.0 — 2026-07-18
 
 Hardening release: no new rules or commands — parser correctness, context
