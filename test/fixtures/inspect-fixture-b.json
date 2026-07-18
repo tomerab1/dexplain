@@ -1,0 +1,85 @@
+[
+    {
+        "Id": "sha256:41bbc5570cd967d8d6ee075d1a052dddcd91f41eb73b02d4b625151566fa15bd",
+        "RepoTags": [
+            "dexplain-fixture:latest"
+        ],
+        "RepoDigests": [
+            "dexplain-fixture@sha256:41bbc5570cd967d8d6ee075d1a052dddcd91f41eb73b02d4b625151566fa15bd"
+        ],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-07-14T10:20:22.422139881Z",
+        "DockerVersion": "27.4.0",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5432/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOSU_VERSION=1.19",
+                "LANG=en_US.utf8",
+                "PG_MAJOR=16",
+                "PG_VERSION=16.14",
+                "PG_SHA256=f6d077142737920858ce958ccdb75c6ee137a63b5b0853c70693d401ac7e3471",
+                "DOCKER_PG_LLVM_DEPS=llvm21-dev \t\tclang21",
+                "PGDATA=/var/lib/postgresql/data"
+            ],
+            "Cmd": [
+                "postgres"
+            ],
+            "Image": "",
+            "Volumes": {
+                "/var/lib/postgresql/data": {}
+            },
+            "WorkingDir": "/",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": null,
+            "StopSignal": "SIGINT"
+        },
+        "Architecture": "arm64",
+        "Variant": "v8",
+        "Os": "linux",
+        "Size": 113862888,
+        "GraphDriver": {
+            "Data": null,
+            "Name": "overlayfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:b2848c02ac6ff53d265469b5b30f649f335e546a83330cd8916d54e65e640409",
+                "sha256:ecf3a78c1d59152fefad6b10d97d553b08fd8f92d6394b06446c2f4d055879ab",
+                "sha256:67ec44c35551d01fcf5f1108629ad86332962ef527f8b41bc05ae9b542fe8b66",
+                "sha256:f95c52e706c9a8af9f05eddf430e180159d20e2997688d9b3c16a607e4b9f7d5",
+                "sha256:4b78bd7d26a9c13af1b7813fbddae18862bea4374ebcbf381b247971627162fb",
+                "sha256:37a6457ab0bd92713a201ca484800e2527791b69bec11eeef1feeb4dbc1f27bd",
+                "sha256:21c0f229bde97abbbd3db71085103907fc6ba7ce0dee19d6e7ed01842d13465e",
+                "sha256:62288a27cee2d20c331594d7e17c5844b92ece5b11ab8432fb5d45060b36c7cf",
+                "sha256:560e01dd53a6f7cab3a07b69c524129703f558ea59258bde2cfa368aa5817524",
+                "sha256:785ee9278b55a649c4edaa3450556642286fdc111c0a633837e9c06b5d86d1de",
+                "sha256:1393db71427a72682e00a3bd626a48112b27072b69d0686edc132b790f78aaef",
+                "sha256:26f562f4c28c360eb231d409660034dacb9758396576837db8d4446e53212ae3",
+                "sha256:d177466693c7bb88dcf0e856c58f86c8f6c75f51374cc63ecf59b2920ce92857",
+                "sha256:a8cfaca19234513a5d15731a89e7e4fc2ce9120e7ed9e7d2fc21dc89e348b903",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-07-14T10:20:22.914732506Z"
+        }
+    }
+]
