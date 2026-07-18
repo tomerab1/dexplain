@@ -16,7 +16,7 @@ test('parseCliArgs splits command, passthrough args, and own flags anywhere', ()
   assert.deepEqual(parseCliArgs(['build', '-t', 'x', '.']), {
     command: 'build',
     rest: ['-t', 'x', '.'],
-    options: { json: false, noColor: false, jsonOut: null, image: null, top: null, failOn: null },
+    options: { json: false, noColor: false, jsonOut: null, image: null, top: null, failOn: null, timeline: null },
   });
   const withFlags = parseCliArgs(['--json', 'analyze', 'log.ndjson', '--image', 'ref', '--top=5']);
   assert.equal(withFlags.command, 'analyze');
