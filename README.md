@@ -4,6 +4,8 @@
 
 **`EXPLAIN` for Docker builds and images.**
 
+![dexplain build demo: live step progress, then ranked findings across security, cache, build-time, image-size, and dockerfile categories](https://raw.githubusercontent.com/tomerab1/dexplain/main/docs/demo.gif)
+
 `dexplain` is to a slow `docker build` what `EXPLAIN` is to a slow SQL query: it turns the
 build into structured facts and a ranked list of findings, so the bottleneck is obvious
 and the fix is concrete. It wraps your build (or ingests a log / an existing image / a
