@@ -7,7 +7,7 @@
     "access": "public"
   },
   "bin": {
-    "dexplain": "./dexplain.mjs"
+    "dexplain": "dexplain.mjs"
   },
   "files": [
     "dexplain.mjs",
